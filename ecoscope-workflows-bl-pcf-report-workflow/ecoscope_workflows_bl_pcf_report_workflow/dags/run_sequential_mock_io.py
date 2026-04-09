@@ -728,9 +728,7 @@ def main(params: Params):
             unpack_depth=1,
         )
         .partial(
-            time_range=time_range,
-            periods_back=5,
-            **(params_dict.get("previous_period_range") or {}),
+            time_range=time_range, **(params_dict.get("previous_period_range") or {})
         )
         .call()
     )

@@ -7,7 +7,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, conint
 
 
 class WorkflowDetails(BaseModel):
@@ -16,6 +16,21 @@ class WorkflowDetails(BaseModel):
     )
     name: str = Field(..., title="Workflow Name")
     description: Optional[str] = Field("", title="Workflow Description")
+
+
+class PreviousPeriodRange(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    periods_back: Optional[conint(ge=1)] = Field(
+        1,
+        description="How many periods back to shift (default: 1 = the immediately preceding period). Increase to compare against a more distant reference window.",
+        title="Periods Back",
+    )
+
+
+class PreviousPeriodTimeRange(BaseModel):
+    previous_period_range: Optional[PreviousPeriodRange] = Field(None, title="")
 
 
 class TimezoneInfo(BaseModel):
@@ -88,4 +103,10 @@ class FormData(BaseModel):
     er_client_name: Optional[ErClientName] = Field(None, title="Connect to EarthRanger")
     time_frequency: Optional[TimeFrequencyModel] = Field(
         None, title="Select time frequency for temporal charts"
+    )
+    Previous_period_time_range: Optional[PreviousPeriodTimeRange] = Field(
+        None,
+        alias="Previous period time range",
+        description="Automatically calculated from the report time range above — shifted back by one equivalent period. For example, if the report covers Jan 1–Feb 1, the previous period will be Dec 1–Jan 1. This is used to compare current events against the same duration in the prior period.",
+        title="Previous Period Range",
     )

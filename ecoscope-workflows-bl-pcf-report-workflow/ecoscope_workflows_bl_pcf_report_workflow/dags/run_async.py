@@ -1003,7 +1003,6 @@ def main(params: Params):
             .set_executor("lithops"),
             partial={
                 "time_range": DependsOn("time_range"),
-                "periods_back": 5,
             }
             | (params_dict.get("previous_period_range") or {}),
             method="call",

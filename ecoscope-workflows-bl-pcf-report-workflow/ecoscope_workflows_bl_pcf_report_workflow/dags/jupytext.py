@@ -959,12 +959,14 @@ get_current_events = (
 
 
 # %% [markdown]
-# ## Get previous period time range
+# ##
 
 # %%
 # parameters
 
-previous_period_range_params = dict()
+previous_period_range_params = dict(
+    periods_back=...,
+)
 
 # %%
 # call the task
@@ -981,7 +983,7 @@ previous_period_range = (
         ],
         unpack_depth=1,
     )
-    .partial(time_range=time_range, periods_back=5, **previous_period_range_params)
+    .partial(time_range=time_range, **previous_period_range_params)
     .call()
 )
 

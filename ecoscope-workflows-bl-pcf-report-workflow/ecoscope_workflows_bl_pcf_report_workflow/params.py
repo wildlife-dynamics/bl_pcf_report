@@ -7,7 +7,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, conint
 
 
 class WorkflowDetails(BaseModel):
@@ -16,6 +16,15 @@ class WorkflowDetails(BaseModel):
     )
     name: str = Field(..., title="Workflow Name")
     description: Optional[str] = Field("", title="Workflow Description")
+
+
+class PreviousPeriodRange(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    periods_back: Optional[conint(ge=1)] = Field(
+        1, description="How many periods back to shift", title="Periods Back"
+    )
 
 
 class TimezoneInfo(BaseModel):
@@ -89,3 +98,4 @@ class Params(BaseModel):
     time_frequency: Optional[TimeFrequencyModel] = Field(
         None, title="Select time frequency for temporal charts"
     )
+    previous_period_range: Optional[PreviousPeriodRange] = Field(None, title="")

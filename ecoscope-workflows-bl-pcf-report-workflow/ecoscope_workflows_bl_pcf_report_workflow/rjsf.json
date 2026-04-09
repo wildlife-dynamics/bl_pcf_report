@@ -89,6 +89,29 @@
       ],
       "type": "object",
       "title": "Select time frequency for temporal charts"
+    },
+    "Previous period time range": {
+      "type": "object",
+      "description": "Automatically calculated from the report time range above \u2014 shifted back by one equivalent period. For example, if the report covers Jan 1\u2013Feb 1, the previous period will be Dec 1\u2013Jan 1. This is used to compare current events against the same duration in the prior period.",
+      "ecoscope:task_group": true,
+      "properties": {
+        "previous_period_range": {
+          "additionalProperties": false,
+          "properties": {
+            "periods_back": {
+              "default": 1,
+              "minimum": 1,
+              "title": "Periods Back",
+              "type": "integer",
+              "description": "How many periods back to shift (default: 1 = the immediately preceding period). Increase to compare against a more distant reference window."
+            }
+          },
+          "required": [],
+          "type": "object",
+          "title": ""
+        }
+      },
+      "title": "Previous Period Range"
     }
   },
   "$defs": {
@@ -166,7 +189,8 @@
       "workflow_details",
       "time_range",
       "er_client_name",
-      "time_frequency"
+      "time_frequency",
+      "Previous period time range"
     ]
   },
   "additionalProperties": false

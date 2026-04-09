@@ -34,6 +34,15 @@ task-instance-defaults:
       - any_is_empty_df
       - any_dependency_skipped
 
+rjsf-overrides:
+  properties:
+    Previous period time range.title: "Previous Period Range"
+    Previous period time range.properties.previous_period_range.properties.periods_back.title: "Periods Back"
+    Previous period time range.properties.previous_period_range.properties.periods_back.description: >-
+      How many periods back to shift (default: 1 = the immediately preceding
+      period). Increase to compare against a more distant reference window.
+    Previous period time range.properties.previous_period_range.properties.periods_back.default: 1
+
 workflow:
   # Set workflow details 
   - name: Set Workflow Details
@@ -309,12 +318,27 @@ workflow:
       include_null_geometry: false
       include_display_values: true
   
-  - name: Get previous period time range
-    id: previous_period_range
-    task: shift_previous_period
-    partial: 
-      time_range: ${{ workflow.time_range.return }}
-      periods_back: 5
+  - title: Previous period time range
+    type: task-group
+    description: >-
+      Automatically calculated from the report time range above — shifted back
+      by one equivalent period. For example, if the report covers Jan 1–Feb 1,
+      the previous period will be Dec 1–Jan 1. This is used to compare current
+      events against the same duration in the prior period.
+    tasks:
+      - name: null
+        id: previous_period_range
+        task: shift_previous_period
+        partial: 
+          time_range: ${{ workflow.time_range.return }}
+
+
+  # - name: Get previous period time range
+  #   id: previous_period_range
+  #   task: shift_previous_period
+  #   partial: 
+  #     time_range: ${{ workflow.time_range.return }}
+  #     #periods_back: 5 -- expose
 
   - name: Retrieve previous period events
     id: get_previous_data

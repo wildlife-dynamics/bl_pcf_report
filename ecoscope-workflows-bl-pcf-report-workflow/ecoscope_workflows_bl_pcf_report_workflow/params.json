@@ -89,6 +89,21 @@
       ],
       "type": "object",
       "title": "Select time frequency for temporal charts"
+    },
+    "previous_period_range": {
+      "additionalProperties": false,
+      "properties": {
+        "periods_back": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Periods Back",
+          "type": "integer",
+          "description": "How many periods back to shift"
+        }
+      },
+      "required": [],
+      "type": "object",
+      "title": ""
     }
   },
   "$defs": {
@@ -166,7 +181,8 @@
       "workflow_details",
       "time_range",
       "er_client_name",
-      "time_frequency"
+      "time_frequency",
+      "previous_period_range"
     ]
   },
   "additionalProperties": false
