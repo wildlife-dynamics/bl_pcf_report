@@ -18,10 +18,6 @@ from ecoscope_workflows_core.tasks.config import (
 from ecoscope_workflows_core.tasks.filter import set_time_range as set_time_range
 from ecoscope_workflows_core.tasks.groupby import set_groupers as set_groupers
 from ecoscope_workflows_core.tasks.io import set_er_connection as set_er_connection
-from ecoscope_workflows_core.tasks.skip import (
-    any_dependency_skipped as any_dependency_skipped,
-)
-from ecoscope_workflows_core.tasks.skip import any_is_empty_df as any_is_empty_df
 from ecoscope_workflows_core.testing import create_task_magicmock  # 🧪
 from ecoscope_workflows_ext_big_life.tasks import (
     select_time_frequency as select_time_frequency,
@@ -48,6 +44,10 @@ get_events = create_task_magicmock(  # 🧪
     anchor="ecoscope_workflows_ext_ecoscope.tasks.io",  # 🧪
     func_name="get_events",  # 🧪
 )  # 🧪
+from ecoscope_workflows_core.tasks.skip import (
+    any_dependency_skipped as any_dependency_skipped,
+)
+from ecoscope_workflows_core.tasks.skip import any_is_empty_df as any_is_empty_df
 from ecoscope_workflows_ext_big_life.tasks import (
     shift_previous_period as shift_previous_period,
 )
@@ -56,7 +56,6 @@ get_events = create_task_magicmock(  # 🧪
     anchor="ecoscope_workflows_ext_ecoscope.tasks.io",  # 🧪
     func_name="get_events",  # 🧪
 )  # 🧪
-
 process_events_details = create_task_magicmock(  # 🧪
     anchor="ecoscope_workflows_ext_custom.tasks.io",  # 🧪
     func_name="process_events_details",  # 🧪
@@ -125,6 +124,7 @@ from ecoscope_workflows_ext_big_life.tasks import (
 from ecoscope_workflows_ext_big_life.tasks import (
     map_color_column_value as map_color_column_value,
 )
+from ecoscope_workflows_ext_big_life.tasks import print_output as print_output
 from ecoscope_workflows_ext_big_life.tasks import reorder_cols as reorder_cols
 from ecoscope_workflows_ext_big_life.tasks import (
     summarize_predation_table as summarize_predation_table,
@@ -385,6 +385,7 @@ def main(params: Params):
             "get_ranch_name",
             "draw_ranch_level_historic_chart",
         ],
+        "print_outputs": ["combine_ranch_name_chart"],
         "persist_ranch_historic_chart": ["combine_ranch_name_chart"],
         "convert_ranch_historic_chart_png": ["persist_ranch_historic_chart"],
         "download_big_life_template": [],
@@ -404,13 +405,6 @@ def main(params: Params):
             .set_task_instance_id("workflow_details")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial=(params_dict.get("workflow_details") or {}),
             method="call",
@@ -420,13 +414,6 @@ def main(params: Params):
             .set_task_instance_id("time_range")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial=(params_dict.get("time_range") or {}),
             method="call",
@@ -436,13 +423,6 @@ def main(params: Params):
             .set_task_instance_id("groupers")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "groupers": [
@@ -459,13 +439,6 @@ def main(params: Params):
             .set_task_instance_id("er_client_name")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial=(params_dict.get("er_client_name") or {}),
             method="call",
@@ -475,13 +448,6 @@ def main(params: Params):
             .set_task_instance_id("configure_base_maps")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "base_maps": [
@@ -505,13 +471,6 @@ def main(params: Params):
             .set_task_instance_id("ambo_ranch_layers")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "url": "https://www.dropbox.com/scl/fi/wrcp3pnnxqyrclzmbtt1r/amboseli_ranch_conservancies_layers.gpkg?rlkey=jfbqj1b1nwhijxbsy7b2v1d29&st=d7rbqdfe&dl=0",
@@ -528,13 +487,6 @@ def main(params: Params):
             .set_task_instance_id("ambo_bound_fence")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "url": "https://www.dropbox.com/scl/fi/k6dgrmxmxeb3fe6glihwa/amboseli_group_ranch_boundaries_x_electric_fence.gpkg?rlkey=limtzffe88lr0iof5kf3b6uoy&st=rreho3tq&dl=0",
@@ -551,13 +503,6 @@ def main(params: Params):
             .set_task_instance_id("ambo_conservancies")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "url": "https://www.dropbox.com/scl/fi/blo1smf49buhwx24y4z60/amboseli_group_ranch_boundaries.gpkg?rlkey=w86emavj8ug7zab73ifbzg6jv&st=v8uptlb0&dl=0",
@@ -574,13 +519,6 @@ def main(params: Params):
             .set_task_instance_id("time_frequency")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial=(params_dict.get("time_frequency") or {}),
             method="call",
@@ -590,13 +528,6 @@ def main(params: Params):
             .set_task_instance_id("load_ambo_layers")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "file_path": DependsOn("ambo_ranch_layers"),
@@ -611,13 +542,6 @@ def main(params: Params):
             .set_task_instance_id("load_ambo_boundaries_fence")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "file_path": DependsOn("ambo_bound_fence"),
@@ -632,13 +556,6 @@ def main(params: Params):
             .set_task_instance_id("load_ambo_conservancies")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "file_path": DependsOn("ambo_conservancies"),
@@ -653,13 +570,6 @@ def main(params: Params):
             .set_task_instance_id("reproject_ambo_layers")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "gdf": DependsOn("load_ambo_layers"),
@@ -673,13 +583,6 @@ def main(params: Params):
             .set_task_instance_id("reproject_ambo_boundaries")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "gdf": DependsOn("load_ambo_boundaries_fence"),
@@ -693,13 +596,6 @@ def main(params: Params):
             .set_task_instance_id("reproject_ambo_conservancies")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "gdf": DependsOn("load_ambo_conservancies"),
@@ -713,13 +609,6 @@ def main(params: Params):
             .set_task_instance_id("split_ambo_layers_use")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "gdf": DependsOn("reproject_ambo_layers"),
@@ -733,13 +622,6 @@ def main(params: Params):
             .set_task_instance_id("annotate_ambo_layers_gdf_dict")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "gdf_dict": DependsOn("split_ambo_layers_use"),
@@ -752,13 +634,6 @@ def main(params: Params):
             .set_task_instance_id("create_ambo_layers_styled")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "gdf_dict": DependsOn("annotate_ambo_layers_gdf_dict"),
@@ -883,13 +758,6 @@ def main(params: Params):
             .set_task_instance_id("split_ambo_boundaries")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "gdf": DependsOn("reproject_ambo_boundaries"),
@@ -903,13 +771,6 @@ def main(params: Params):
             .set_task_instance_id("annotate_ambo_boundaries")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "gdf_dict": DependsOn("split_ambo_boundaries"),
@@ -922,13 +783,6 @@ def main(params: Params):
             .set_task_instance_id("create_ambo_boundaries_styled")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "gdf_dict": DependsOn("annotate_ambo_boundaries"),
@@ -1021,13 +875,6 @@ def main(params: Params):
             .set_task_instance_id("previous_period_range")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "time_range": DependsOn("time_range"),
@@ -1040,13 +887,6 @@ def main(params: Params):
             .set_task_instance_id("get_previous_data")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "client": DependsOn("er_client_name"),
@@ -1065,7 +905,7 @@ def main(params: Params):
                 "event_types": [
                     "hwc_lvstprd",
                 ],
-                "raise_on_empty": True,
+                "raise_on_empty": False,
                 "include_details": True,
                 "include_updates": False,
                 "include_related_events": False,
@@ -1165,12 +1005,6 @@ def main(params: Params):
                     "GPS Accuracy",
                     "Owner ID number",
                     "Owner name",
-                    "Partners present",
-                    "Time of verification",
-                    "Zone",
-                    "Teams involved",
-                    "Name of verification officer",
-                    "Area",
                 ],
                 "raise_if_not_found": True,
             }
@@ -1404,12 +1238,6 @@ def main(params: Params):
                     "GPS Accuracy",
                     "Owner ID number",
                     "Owner name",
-                    "Partners present",
-                    "Time of verification",
-                    "Zone",
-                    "Teams involved",
-                    "Name of verification officer",
-                    "Area",
                 ],
                 "raise_if_not_found": True,
             }
@@ -1767,13 +1595,6 @@ def main(params: Params):
             .set_task_instance_id("split_by_ranch")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "df": DependsOn("current_total_killed"),
@@ -1894,13 +1715,6 @@ def main(params: Params):
             .set_task_instance_id("zip_ranch_summaries")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "sequences": [
@@ -2000,13 +1814,6 @@ def main(params: Params):
             .set_task_instance_id("combine_ranch_name_table")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "sequences": [
@@ -2906,7 +2713,7 @@ def main(params: Params):
                 "config": {
                     "full_page": False,
                     "device_scale_factor": 2.0,
-                    "wait_for_timeout": 50,
+                    "wait_for_timeout": 10,
                     "max_concurrent_pages": 1,
                 },
             }
@@ -2984,7 +2791,7 @@ def main(params: Params):
                 "config": {
                     "full_page": False,
                     "device_scale_factor": 2.0,
-                    "wait_for_timeout": 50,
+                    "wait_for_timeout": 10,
                     "max_concurrent_pages": 1,
                 },
             }
@@ -3062,7 +2869,7 @@ def main(params: Params):
                 "config": {
                     "full_page": False,
                     "device_scale_factor": 2.0,
-                    "wait_for_timeout": 50,
+                    "wait_for_timeout": 10,
                     "max_concurrent_pages": 1,
                 },
             }
@@ -3158,7 +2965,7 @@ def main(params: Params):
                 "config": {
                     "full_page": False,
                     "device_scale_factor": 2.0,
-                    "wait_for_timeout": 50,
+                    "wait_for_timeout": 10,
                     "max_concurrent_pages": 1,
                 },
             }
@@ -3254,7 +3061,7 @@ def main(params: Params):
                 "config": {
                     "full_page": False,
                     "device_scale_factor": 2.0,
-                    "wait_for_timeout": 50,
+                    "wait_for_timeout": 10,
                     "max_concurrent_pages": 1,
                 },
             }
@@ -3349,7 +3156,7 @@ def main(params: Params):
                 "config": {
                     "full_page": False,
                     "device_scale_factor": 2.0,
-                    "wait_for_timeout": 50,
+                    "wait_for_timeout": 10,
                     "max_concurrent_pages": 1,
                 },
             }
@@ -3427,7 +3234,7 @@ def main(params: Params):
                 "config": {
                     "full_page": False,
                     "device_scale_factor": 2.0,
-                    "wait_for_timeout": 50,
+                    "wait_for_timeout": 10,
                     "max_concurrent_pages": 1,
                 },
             }
@@ -3551,7 +3358,7 @@ def main(params: Params):
                 "config": {
                     "full_page": False,
                     "device_scale_factor": 2.0,
-                    "wait_for_timeout": 50,
+                    "wait_for_timeout": 10,
                     "max_concurrent_pages": 1,
                 },
             }
@@ -3644,7 +3451,7 @@ def main(params: Params):
                 "config": {
                     "full_page": False,
                     "device_scale_factor": 2.0,
-                    "wait_for_timeout": 50,
+                    "wait_for_timeout": 10,
                     "max_concurrent_pages": 1,
                 },
             }
@@ -4500,7 +4307,7 @@ def main(params: Params):
                 "config": {
                     "full_page": False,
                     "device_scale_factor": 2.0,
-                    "wait_for_timeout": 50,
+                    "wait_for_timeout": 10,
                     "max_concurrent_pages": 1,
                 },
             }
@@ -4606,7 +4413,7 @@ def main(params: Params):
                 "config": {
                     "full_page": False,
                     "device_scale_factor": 2.0,
-                    "wait_for_timeout": 50,
+                    "wait_for_timeout": 10,
                     "max_concurrent_pages": 1,
                 },
             }
@@ -4712,7 +4519,7 @@ def main(params: Params):
                 "config": {
                     "full_page": False,
                     "device_scale_factor": 2.0,
-                    "wait_for_timeout": 50,
+                    "wait_for_timeout": 10,
                     "max_concurrent_pages": 1,
                 },
             }
@@ -4801,7 +4608,7 @@ def main(params: Params):
                     "height": 2000,
                     "full_page": False,
                     "device_scale_factor": 2.0,
-                    "wait_for_timeout": 50,
+                    "wait_for_timeout": 10,
                     "max_concurrent_pages": 1,
                 },
             }
@@ -4813,13 +4620,6 @@ def main(params: Params):
             .set_task_instance_id("group_ranch_level_groupers")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "sequences": [
@@ -4835,13 +4635,6 @@ def main(params: Params):
             .set_task_instance_id("draw_ranch_level_historic_chart")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "x_axis": "time",
@@ -4850,7 +4643,7 @@ def main(params: Params):
                 "time_frequency": DependsOn("time_frequency"),
                 "ncols": 2,
                 "shared_yaxes": False,
-                "row_height": 350,
+                "row_height": 300,
                 "group_order": None,
                 "group_column": "Animal responsible",
                 "ascending": True,
@@ -4883,13 +4676,6 @@ def main(params: Params):
             .set_task_instance_id("combine_ranch_name_chart")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "sequences": [
@@ -4900,18 +4686,27 @@ def main(params: Params):
             | (params_dict.get("combine_ranch_name_chart") or {}),
             method="call",
         ),
+        "print_outputs": Node(
+            async_task=print_output.validate()
+            .set_task_instance_id("print_outputs")
+            .handle_errors()
+            .with_tracing()
+            .set_executor("lithops"),
+            partial={
+                "label": "ranch output",
+            }
+            | (params_dict.get("print_outputs") or {}),
+            method="mapvalues",
+            kwargs={
+                "argnames": ["value"],
+                "argvalues": DependsOn("combine_ranch_name_chart"),
+            },
+        ),
         "persist_ranch_historic_chart": Node(
             async_task=persist_text.validate()
             .set_task_instance_id("persist_ranch_historic_chart")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "root_path": os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
@@ -4929,20 +4724,13 @@ def main(params: Params):
             .set_task_instance_id("convert_ranch_historic_chart_png")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "output_dir": os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
                 "config": {
                     "full_page": False,
                     "device_scale_factor": 2.0,
-                    "wait_for_timeout": 50,
+                    "wait_for_timeout": 10,
                     "max_concurrent_pages": 1,
                     "width": 1280,
                     "height": 2000,
@@ -4960,13 +4748,6 @@ def main(params: Params):
             .set_task_instance_id("download_big_life_template")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "url": "https://www.dropbox.com/scl/fi/i1v1emk1s2sb15w2arhld/pcf_report_template.docx?rlkey=16850ymbagt9vbuyqn8fsg7tc&st=zuxci7sv&dl=0",
@@ -4983,13 +4764,6 @@ def main(params: Params):
             .set_task_instance_id("get_user_name")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "client": DependsOn("er_client_name"),
@@ -5002,13 +4776,6 @@ def main(params: Params):
             .set_task_instance_id("get_fullname")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "user": DependsOn("get_user_name"),
@@ -5021,13 +4788,6 @@ def main(params: Params):
             .set_task_instance_id("generate_big_life_report")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "template_path": DependsOn("download_big_life_template"),
@@ -5045,13 +4805,6 @@ def main(params: Params):
             .set_task_instance_id("big_life_pcf_dashboard_report")
             .handle_errors()
             .with_tracing()
-            .skipif(
-                conditions=[
-                    any_is_empty_df,
-                    any_dependency_skipped,
-                ],
-                unpack_depth=1,
-            )
             .set_executor("lithops"),
             partial={
                 "details": DependsOn("workflow_details"),

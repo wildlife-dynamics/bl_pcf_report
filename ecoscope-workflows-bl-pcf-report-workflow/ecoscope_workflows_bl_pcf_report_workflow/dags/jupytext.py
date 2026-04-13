@@ -68,6 +68,7 @@ from ecoscope_workflows_ext_big_life.tasks import (
 from ecoscope_workflows_ext_big_life.tasks import (
     map_color_column_value as map_color_column_value,
 )
+from ecoscope_workflows_ext_big_life.tasks import print_output as print_output
 from ecoscope_workflows_ext_big_life.tasks import reorder_cols as reorder_cols
 from ecoscope_workflows_ext_big_life.tasks import (
     select_time_frequency as select_time_frequency,
@@ -170,13 +171,6 @@ workflow_details = (
     set_workflow_details.set_task_instance_id("workflow_details")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(**workflow_details_params)
     .call()
 )
@@ -203,13 +197,6 @@ time_range = (
     set_time_range.set_task_instance_id("time_range")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(**time_range_params)
     .call()
 )
@@ -231,13 +218,6 @@ groupers = (
     set_groupers.set_task_instance_id("groupers")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(groupers=[{"index_name": "Ranch"}], **groupers_params)
     .call()
 )
@@ -261,13 +241,6 @@ er_client_name = (
     set_er_connection.set_task_instance_id("er_client_name")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(**er_client_name_params)
     .call()
 )
@@ -289,13 +262,6 @@ configure_base_maps = (
     set_base_maps_pydeck.set_task_instance_id("configure_base_maps")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         base_maps=[
             {
@@ -331,13 +297,6 @@ ambo_ranch_layers = (
     fetch_and_persist_file.set_task_instance_id("ambo_ranch_layers")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         url="https://www.dropbox.com/scl/fi/wrcp3pnnxqyrclzmbtt1r/amboseli_ranch_conservancies_layers.gpkg?rlkey=jfbqj1b1nwhijxbsy7b2v1d29&st=d7rbqdfe&dl=0",
         output_path=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
@@ -366,13 +325,6 @@ ambo_bound_fence = (
     fetch_and_persist_file.set_task_instance_id("ambo_bound_fence")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         url="https://www.dropbox.com/scl/fi/k6dgrmxmxeb3fe6glihwa/amboseli_group_ranch_boundaries_x_electric_fence.gpkg?rlkey=limtzffe88lr0iof5kf3b6uoy&st=rreho3tq&dl=0",
         output_path=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
@@ -401,13 +353,6 @@ ambo_conservancies = (
     fetch_and_persist_file.set_task_instance_id("ambo_conservancies")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         url="https://www.dropbox.com/scl/fi/blo1smf49buhwx24y4z60/amboseli_group_ranch_boundaries.gpkg?rlkey=w86emavj8ug7zab73ifbzg6jv&st=v8uptlb0&dl=0",
         output_path=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
@@ -438,13 +383,6 @@ time_frequency = (
     select_time_frequency.set_task_instance_id("time_frequency")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(**time_frequency_params)
     .call()
 )
@@ -466,13 +404,6 @@ load_ambo_layers = (
     load_df.set_task_instance_id("load_ambo_layers")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         file_path=ambo_ranch_layers,
         layer=None,
@@ -499,13 +430,6 @@ load_ambo_boundaries_fence = (
     load_df.set_task_instance_id("load_ambo_boundaries_fence")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         file_path=ambo_bound_fence,
         layer=None,
@@ -532,13 +456,6 @@ load_ambo_conservancies = (
     load_df.set_task_instance_id("load_ambo_conservancies")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         file_path=ambo_conservancies,
         layer=None,
@@ -565,13 +482,6 @@ reproject_ambo_layers = (
     reproject_gdf.set_task_instance_id("reproject_ambo_layers")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         gdf=load_ambo_layers, target_crs="EPSG:4326", **reproject_ambo_layers_params
     )
@@ -595,13 +505,6 @@ reproject_ambo_boundaries = (
     reproject_gdf.set_task_instance_id("reproject_ambo_boundaries")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         gdf=load_ambo_boundaries_fence,
         target_crs="EPSG:4326",
@@ -627,13 +530,6 @@ reproject_ambo_conservancies = (
     reproject_gdf.set_task_instance_id("reproject_ambo_conservancies")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         gdf=load_ambo_conservancies,
         target_crs="EPSG:4326",
@@ -659,13 +555,6 @@ split_ambo_layers_use = (
     split_gdf_by_column.set_task_instance_id("split_ambo_layers_use")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         gdf=reproject_ambo_layers, column="land_use", **split_ambo_layers_use_params
     )
@@ -691,13 +580,6 @@ annotate_ambo_layers_gdf_dict = (
     )
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(gdf_dict=split_ambo_layers_use, **annotate_ambo_layers_gdf_dict_params)
     .call()
 )
@@ -719,13 +601,6 @@ create_ambo_layers_styled = (
     create_deckgl_layers_from_gdf_dict.set_task_instance_id("create_ambo_layers_styled")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         gdf_dict=annotate_ambo_layers_gdf_dict,
         styles={
@@ -807,13 +682,6 @@ split_ambo_boundaries = (
     split_gdf_by_column.set_task_instance_id("split_ambo_boundaries")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         gdf=reproject_ambo_boundaries, column="land_use", **split_ambo_boundaries_params
     )
@@ -837,13 +705,6 @@ annotate_ambo_boundaries = (
     annotate_gdf_dict_with_geom_type.set_task_instance_id("annotate_ambo_boundaries")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(gdf_dict=split_ambo_boundaries, **annotate_ambo_boundaries_params)
     .call()
 )
@@ -867,13 +728,6 @@ create_ambo_boundaries_styled = (
     )
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         gdf_dict=annotate_ambo_boundaries,
         styles={
@@ -976,13 +830,6 @@ previous_period_range = (
     shift_previous_period.set_task_instance_id("previous_period_range")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(time_range=time_range, **previous_period_range_params)
     .call()
 )
@@ -1004,13 +851,6 @@ get_previous_data = (
     get_events.set_task_instance_id("get_previous_data")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         client=er_client_name,
         time_range=previous_period_range,
@@ -1026,7 +866,7 @@ get_previous_data = (
             "event_details",
         ],
         event_types=["hwc_lvstprd"],
-        raise_on_empty=True,
+        raise_on_empty=False,
         include_details=True,
         include_updates=False,
         include_related_events=False,
@@ -1174,12 +1014,6 @@ map_current_columns = (
             "GPS Accuracy",
             "Owner ID number",
             "Owner name",
-            "Partners present",
-            "Time of verification",
-            "Zone",
-            "Teams involved",
-            "Name of verification officer",
-            "Area",
         ],
         retain_columns=[],
         rename_columns={},
@@ -1517,12 +1351,6 @@ map_previous_columns = (
             "GPS Accuracy",
             "Owner ID number",
             "Owner name",
-            "Partners present",
-            "Time of verification",
-            "Zone",
-            "Teams involved",
-            "Name of verification officer",
-            "Area",
         ],
         retain_columns=[],
         rename_columns={},
@@ -2045,13 +1873,6 @@ split_by_ranch = (
     split_groups.set_task_instance_id("split_by_ranch")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(df=current_total_killed, groupers=groupers, **split_by_ranch_params)
     .call()
 )
@@ -2214,13 +2035,6 @@ zip_ranch_summaries = (
     zip_groupbykey.set_task_instance_id("zip_ranch_summaries")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         sequences=[
             predation_ranch_incidents,
@@ -2363,13 +2177,6 @@ combine_ranch_name_table = (
     zip_groupbykey.set_task_instance_id("combine_ranch_name_table")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         sequences=[get_ranch_name, format_ranch_summary],
         **combine_ranch_name_table_params,
@@ -3691,7 +3498,7 @@ convert_total_livestock_pie_png = (
         config={
             "full_page": False,
             "device_scale_factor": 2.0,
-            "wait_for_timeout": 50,
+            "wait_for_timeout": 10,
             "max_concurrent_pages": 1,
         },
         **convert_total_livestock_pie_png_params,
@@ -3801,7 +3608,7 @@ convert_comp_pred_pie_png = (
         config={
             "full_page": False,
             "device_scale_factor": 2.0,
-            "wait_for_timeout": 50,
+            "wait_for_timeout": 10,
             "max_concurrent_pages": 1,
         },
         **convert_comp_pred_pie_png_params,
@@ -3911,7 +3718,7 @@ convert_comp_ranch_pie_png = (
         config={
             "full_page": False,
             "device_scale_factor": 2.0,
-            "wait_for_timeout": 50,
+            "wait_for_timeout": 10,
             "max_concurrent_pages": 1,
         },
         **convert_comp_ranch_pie_png_params,
@@ -4035,7 +3842,7 @@ convert_total_lvstk_stacked_png = (
         config={
             "full_page": False,
             "device_scale_factor": 2.0,
-            "wait_for_timeout": 50,
+            "wait_for_timeout": 10,
             "max_concurrent_pages": 1,
         },
         **convert_total_lvstk_stacked_png_params,
@@ -4159,7 +3966,7 @@ convert_claims_ranch_stacked_png = (
         config={
             "full_page": False,
             "device_scale_factor": 2.0,
-            "wait_for_timeout": 50,
+            "wait_for_timeout": 10,
             "max_concurrent_pages": 1,
         },
         **convert_claims_ranch_stacked_png_params,
@@ -4284,7 +4091,7 @@ convert_killed_pred_stacked_png = (
         config={
             "full_page": False,
             "device_scale_factor": 2.0,
-            "wait_for_timeout": 50,
+            "wait_for_timeout": 10,
             "max_concurrent_pages": 1,
         },
         **convert_killed_pred_stacked_png_params,
@@ -4394,7 +4201,7 @@ convert_location_attack_pie_png = (
         config={
             "full_page": False,
             "device_scale_factor": 2.0,
-            "wait_for_timeout": 50,
+            "wait_for_timeout": 10,
             "max_concurrent_pages": 1,
         },
         **convert_location_attack_pie_png_params,
@@ -4571,7 +4378,7 @@ convert_boma_type_pie_png = (
         config={
             "full_page": False,
             "device_scale_factor": 2.0,
-            "wait_for_timeout": 50,
+            "wait_for_timeout": 10,
             "max_concurrent_pages": 1,
         },
         **convert_boma_type_pie_png_params,
@@ -4698,7 +4505,7 @@ convert_time_attack_bar_png = (
         config={
             "full_page": False,
             "device_scale_factor": 2.0,
-            "wait_for_timeout": 50,
+            "wait_for_timeout": 10,
             "max_concurrent_pages": 1,
         },
         **convert_time_attack_bar_png_params,
@@ -5882,7 +5689,7 @@ convert_ranch_killed_multi_png = (
         config={
             "full_page": False,
             "device_scale_factor": 2.0,
-            "wait_for_timeout": 50,
+            "wait_for_timeout": 10,
             "max_concurrent_pages": 1,
         },
         **convert_ranch_killed_multi_png_params,
@@ -6021,7 +5828,7 @@ convert_loc_killed_multiline_png = (
         config={
             "full_page": False,
             "device_scale_factor": 2.0,
-            "wait_for_timeout": 50,
+            "wait_for_timeout": 10,
             "max_concurrent_pages": 1,
         },
         **convert_loc_killed_multiline_png_params,
@@ -6160,7 +5967,7 @@ convert_claim_type_multiline_png = (
         config={
             "full_page": False,
             "device_scale_factor": 2.0,
-            "wait_for_timeout": 50,
+            "wait_for_timeout": 10,
             "max_concurrent_pages": 1,
         },
         **convert_claim_type_multiline_png_params,
@@ -6285,7 +6092,7 @@ convert_pred_killed_multibar_png = (
             "height": 2000,
             "full_page": False,
             "device_scale_factor": 2.0,
-            "wait_for_timeout": 50,
+            "wait_for_timeout": 10,
             "max_concurrent_pages": 1,
         },
         **convert_pred_killed_multibar_png_params,
@@ -6310,13 +6117,6 @@ group_ranch_level_groupers = (
     zip_groupbykey.set_task_instance_id("group_ranch_level_groupers")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         sequences=[split_by_ranch, split_previous_by_ranch],
         **group_ranch_level_groupers_params,
@@ -6345,13 +6145,6 @@ draw_ranch_level_historic_chart = (
     )
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         x_axis="time",
         y_axis="Total animals killed",
@@ -6359,7 +6152,7 @@ draw_ranch_level_historic_chart = (
         time_frequency=time_frequency,
         ncols=2,
         shared_yaxes=False,
-        row_height=350,
+        row_height=300,
         group_order=None,
         group_column="Animal responsible",
         ascending=True,
@@ -6400,18 +6193,32 @@ combine_ranch_name_chart = (
     zip_groupbykey.set_task_instance_id("combine_ranch_name_chart")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         sequences=[get_ranch_name, draw_ranch_level_historic_chart],
         **combine_ranch_name_chart_params,
     )
     .call()
+)
+
+
+# %% [markdown]
+# ## Print outputs
+
+# %%
+# parameters
+
+print_outputs_params = dict()
+
+# %%
+# call the task
+
+
+print_outputs = (
+    print_output.set_task_instance_id("print_outputs")
+    .handle_errors()
+    .with_tracing()
+    .partial(label="ranch output", **print_outputs_params)
+    .mapvalues(argnames=["value"], argvalues=combine_ranch_name_chart)
 )
 
 
@@ -6431,13 +6238,6 @@ persist_ranch_historic_chart = (
     persist_text.set_task_instance_id("persist_ranch_historic_chart")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         root_path=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
         filename="ranch_level_historic_time_series_chart.html",
@@ -6463,19 +6263,12 @@ convert_ranch_historic_chart_png = (
     html_to_png.set_task_instance_id("convert_ranch_historic_chart_png")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         output_dir=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
         config={
             "full_page": False,
             "device_scale_factor": 2.0,
-            "wait_for_timeout": 50,
+            "wait_for_timeout": 10,
             "max_concurrent_pages": 1,
             "width": 1280,
             "height": 2000,
@@ -6502,13 +6295,6 @@ download_big_life_template = (
     fetch_and_persist_file.set_task_instance_id("download_big_life_template")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         url="https://www.dropbox.com/scl/fi/i1v1emk1s2sb15w2arhld/pcf_report_template.docx?rlkey=16850ymbagt9vbuyqn8fsg7tc&st=zuxci7sv&dl=0",
         output_path=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
@@ -6537,13 +6323,6 @@ get_user_name = (
     get_current_user.set_task_instance_id("get_user_name")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(client=er_client_name, **get_user_name_params)
     .call()
 )
@@ -6565,13 +6344,6 @@ get_fullname = (
     get_user_full_name.set_task_instance_id("get_fullname")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(user=get_user_name, **get_fullname_params)
     .call()
 )
@@ -6593,13 +6365,6 @@ generate_big_life_report = (
     generate_pcf_report.set_task_instance_id("generate_big_life_report")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         template_path=download_big_life_template,
         output_dir=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
@@ -6631,13 +6396,6 @@ big_life_pcf_dashboard_report = (
     gather_dashboard.set_task_instance_id("big_life_pcf_dashboard_report")
     .handle_errors()
     .with_tracing()
-    .skipif(
-        conditions=[
-            any_is_empty_df,
-            any_dependency_skipped,
-        ],
-        unpack_depth=1,
-    )
     .partial(
         details=workflow_details,
         widgets=[],

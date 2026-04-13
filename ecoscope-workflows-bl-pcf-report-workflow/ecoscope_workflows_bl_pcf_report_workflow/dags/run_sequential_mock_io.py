@@ -17,10 +17,6 @@ from ecoscope_workflows_core.tasks.config import (
 from ecoscope_workflows_core.tasks.filter import set_time_range as set_time_range
 from ecoscope_workflows_core.tasks.groupby import set_groupers as set_groupers
 from ecoscope_workflows_core.tasks.io import set_er_connection as set_er_connection
-from ecoscope_workflows_core.tasks.skip import (
-    any_dependency_skipped as any_dependency_skipped,
-)
-from ecoscope_workflows_core.tasks.skip import any_is_empty_df as any_is_empty_df
 from ecoscope_workflows_core.testing import create_task_magicmock  # 🧪
 from ecoscope_workflows_ext_big_life.tasks import (
     select_time_frequency as select_time_frequency,
@@ -47,6 +43,10 @@ get_events = create_task_magicmock(  # 🧪
     anchor="ecoscope_workflows_ext_ecoscope.tasks.io",  # 🧪
     func_name="get_events",  # 🧪
 )  # 🧪
+from ecoscope_workflows_core.tasks.skip import (
+    any_dependency_skipped as any_dependency_skipped,
+)
+from ecoscope_workflows_core.tasks.skip import any_is_empty_df as any_is_empty_df
 from ecoscope_workflows_ext_big_life.tasks import (
     shift_previous_period as shift_previous_period,
 )
@@ -55,7 +55,6 @@ get_events = create_task_magicmock(  # 🧪
     anchor="ecoscope_workflows_ext_ecoscope.tasks.io",  # 🧪
     func_name="get_events",  # 🧪
 )  # 🧪
-
 process_events_details = create_task_magicmock(  # 🧪
     anchor="ecoscope_workflows_ext_custom.tasks.io",  # 🧪
     func_name="process_events_details",  # 🧪
@@ -124,6 +123,7 @@ from ecoscope_workflows_ext_big_life.tasks import (
 from ecoscope_workflows_ext_big_life.tasks import (
     map_color_column_value as map_color_column_value,
 )
+from ecoscope_workflows_ext_big_life.tasks import print_output as print_output
 from ecoscope_workflows_ext_big_life.tasks import reorder_cols as reorder_cols
 from ecoscope_workflows_ext_big_life.tasks import (
     summarize_predation_table as summarize_predation_table,
@@ -179,13 +179,6 @@ def main(params: Params):
         .set_task_instance_id("workflow_details")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(**(params_dict.get("workflow_details") or {}))
         .call()
     )
@@ -195,13 +188,6 @@ def main(params: Params):
         .set_task_instance_id("time_range")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(**(params_dict.get("time_range") or {}))
         .call()
     )
@@ -211,13 +197,6 @@ def main(params: Params):
         .set_task_instance_id("groupers")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             groupers=[{"index_name": "Ranch"}], **(params_dict.get("groupers") or {})
         )
@@ -229,13 +208,6 @@ def main(params: Params):
         .set_task_instance_id("er_client_name")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(**(params_dict.get("er_client_name") or {}))
         .call()
     )
@@ -245,13 +217,6 @@ def main(params: Params):
         .set_task_instance_id("configure_base_maps")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             base_maps=[
                 {
@@ -275,13 +240,6 @@ def main(params: Params):
         .set_task_instance_id("ambo_ranch_layers")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             url="https://www.dropbox.com/scl/fi/wrcp3pnnxqyrclzmbtt1r/amboseli_ranch_conservancies_layers.gpkg?rlkey=jfbqj1b1nwhijxbsy7b2v1d29&st=d7rbqdfe&dl=0",
             output_path=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
@@ -298,13 +256,6 @@ def main(params: Params):
         .set_task_instance_id("ambo_bound_fence")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             url="https://www.dropbox.com/scl/fi/k6dgrmxmxeb3fe6glihwa/amboseli_group_ranch_boundaries_x_electric_fence.gpkg?rlkey=limtzffe88lr0iof5kf3b6uoy&st=rreho3tq&dl=0",
             output_path=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
@@ -321,13 +272,6 @@ def main(params: Params):
         .set_task_instance_id("ambo_conservancies")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             url="https://www.dropbox.com/scl/fi/blo1smf49buhwx24y4z60/amboseli_group_ranch_boundaries.gpkg?rlkey=w86emavj8ug7zab73ifbzg6jv&st=v8uptlb0&dl=0",
             output_path=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
@@ -344,13 +288,6 @@ def main(params: Params):
         .set_task_instance_id("time_frequency")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(**(params_dict.get("time_frequency") or {}))
         .call()
     )
@@ -360,13 +297,6 @@ def main(params: Params):
         .set_task_instance_id("load_ambo_layers")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             file_path=ambo_ranch_layers,
             layer=None,
@@ -381,13 +311,6 @@ def main(params: Params):
         .set_task_instance_id("load_ambo_boundaries_fence")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             file_path=ambo_bound_fence,
             layer=None,
@@ -402,13 +325,6 @@ def main(params: Params):
         .set_task_instance_id("load_ambo_conservancies")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             file_path=ambo_conservancies,
             layer=None,
@@ -423,13 +339,6 @@ def main(params: Params):
         .set_task_instance_id("reproject_ambo_layers")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             gdf=load_ambo_layers,
             target_crs="EPSG:4326",
@@ -443,13 +352,6 @@ def main(params: Params):
         .set_task_instance_id("reproject_ambo_boundaries")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             gdf=load_ambo_boundaries_fence,
             target_crs="EPSG:4326",
@@ -463,13 +365,6 @@ def main(params: Params):
         .set_task_instance_id("reproject_ambo_conservancies")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             gdf=load_ambo_conservancies,
             target_crs="EPSG:4326",
@@ -483,13 +378,6 @@ def main(params: Params):
         .set_task_instance_id("split_ambo_layers_use")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             gdf=reproject_ambo_layers,
             column="land_use",
@@ -503,13 +391,6 @@ def main(params: Params):
         .set_task_instance_id("annotate_ambo_layers_gdf_dict")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             gdf_dict=split_ambo_layers_use,
             **(params_dict.get("annotate_ambo_layers_gdf_dict") or {}),
@@ -522,13 +403,6 @@ def main(params: Params):
         .set_task_instance_id("create_ambo_layers_styled")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             gdf_dict=annotate_ambo_layers_gdf_dict,
             styles={
@@ -598,13 +472,6 @@ def main(params: Params):
         .set_task_instance_id("split_ambo_boundaries")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             gdf=reproject_ambo_boundaries,
             column="land_use",
@@ -618,13 +485,6 @@ def main(params: Params):
         .set_task_instance_id("annotate_ambo_boundaries")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             gdf_dict=split_ambo_boundaries,
             **(params_dict.get("annotate_ambo_boundaries") or {}),
@@ -637,13 +497,6 @@ def main(params: Params):
         .set_task_instance_id("create_ambo_boundaries_styled")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             gdf_dict=annotate_ambo_boundaries,
             styles={
@@ -720,13 +573,6 @@ def main(params: Params):
         .set_task_instance_id("previous_period_range")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             time_range=time_range, **(params_dict.get("previous_period_range") or {})
         )
@@ -738,13 +584,6 @@ def main(params: Params):
         .set_task_instance_id("get_previous_data")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             client=er_client_name,
             time_range=previous_period_range,
@@ -760,7 +599,7 @@ def main(params: Params):
                 "event_details",
             ],
             event_types=["hwc_lvstprd"],
-            raise_on_empty=True,
+            raise_on_empty=False,
             include_details=True,
             include_updates=False,
             include_related_events=False,
@@ -860,12 +699,6 @@ def main(params: Params):
                 "GPS Accuracy",
                 "Owner ID number",
                 "Owner name",
-                "Partners present",
-                "Time of verification",
-                "Zone",
-                "Teams involved",
-                "Name of verification officer",
-                "Area",
             ],
             retain_columns=[],
             rename_columns={},
@@ -1095,12 +928,6 @@ def main(params: Params):
                 "GPS Accuracy",
                 "Owner ID number",
                 "Owner name",
-                "Partners present",
-                "Time of verification",
-                "Zone",
-                "Teams involved",
-                "Name of verification officer",
-                "Area",
             ],
             retain_columns=[],
             rename_columns={},
@@ -1449,13 +1276,6 @@ def main(params: Params):
         .set_task_instance_id("split_by_ranch")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             df=current_total_killed,
             groupers=groupers,
@@ -1564,13 +1384,6 @@ def main(params: Params):
         .set_task_instance_id("zip_ranch_summaries")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             sequences=[
                 predation_ranch_incidents,
@@ -1654,13 +1467,6 @@ def main(params: Params):
         .set_task_instance_id("combine_ranch_name_table")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             sequences=[get_ranch_name, format_ranch_summary],
             **(params_dict.get("combine_ranch_name_table") or {}),
@@ -2538,7 +2344,7 @@ def main(params: Params):
             config={
                 "full_page": False,
                 "device_scale_factor": 2.0,
-                "wait_for_timeout": 50,
+                "wait_for_timeout": 10,
                 "max_concurrent_pages": 1,
             },
             **(params_dict.get("convert_total_livestock_pie_png") or {}),
@@ -2610,7 +2416,7 @@ def main(params: Params):
             config={
                 "full_page": False,
                 "device_scale_factor": 2.0,
-                "wait_for_timeout": 50,
+                "wait_for_timeout": 10,
                 "max_concurrent_pages": 1,
             },
             **(params_dict.get("convert_comp_pred_pie_png") or {}),
@@ -2682,7 +2488,7 @@ def main(params: Params):
             config={
                 "full_page": False,
                 "device_scale_factor": 2.0,
-                "wait_for_timeout": 50,
+                "wait_for_timeout": 10,
                 "max_concurrent_pages": 1,
             },
             **(params_dict.get("convert_comp_ranch_pie_png") or {}),
@@ -2768,7 +2574,7 @@ def main(params: Params):
             config={
                 "full_page": False,
                 "device_scale_factor": 2.0,
-                "wait_for_timeout": 50,
+                "wait_for_timeout": 10,
                 "max_concurrent_pages": 1,
             },
             **(params_dict.get("convert_total_lvstk_stacked_png") or {}),
@@ -2854,7 +2660,7 @@ def main(params: Params):
             config={
                 "full_page": False,
                 "device_scale_factor": 2.0,
-                "wait_for_timeout": 50,
+                "wait_for_timeout": 10,
                 "max_concurrent_pages": 1,
             },
             **(params_dict.get("convert_claims_ranch_stacked_png") or {}),
@@ -2939,7 +2745,7 @@ def main(params: Params):
             config={
                 "full_page": False,
                 "device_scale_factor": 2.0,
-                "wait_for_timeout": 50,
+                "wait_for_timeout": 10,
                 "max_concurrent_pages": 1,
             },
             **(params_dict.get("convert_killed_pred_stacked_png") or {}),
@@ -3011,7 +2817,7 @@ def main(params: Params):
             config={
                 "full_page": False,
                 "device_scale_factor": 2.0,
-                "wait_for_timeout": 50,
+                "wait_for_timeout": 10,
                 "max_concurrent_pages": 1,
             },
             **(params_dict.get("convert_location_attack_pie_png") or {}),
@@ -3126,7 +2932,7 @@ def main(params: Params):
             config={
                 "full_page": False,
                 "device_scale_factor": 2.0,
-                "wait_for_timeout": 50,
+                "wait_for_timeout": 10,
                 "max_concurrent_pages": 1,
             },
             **(params_dict.get("convert_boma_type_pie_png") or {}),
@@ -3215,7 +3021,7 @@ def main(params: Params):
             config={
                 "full_page": False,
                 "device_scale_factor": 2.0,
-                "wait_for_timeout": 50,
+                "wait_for_timeout": 10,
                 "max_concurrent_pages": 1,
             },
             **(params_dict.get("convert_time_attack_bar_png") or {}),
@@ -4009,7 +3815,7 @@ def main(params: Params):
             config={
                 "full_page": False,
                 "device_scale_factor": 2.0,
-                "wait_for_timeout": 50,
+                "wait_for_timeout": 10,
                 "max_concurrent_pages": 1,
             },
             **(params_dict.get("convert_ranch_killed_multi_png") or {}),
@@ -4112,7 +3918,7 @@ def main(params: Params):
             config={
                 "full_page": False,
                 "device_scale_factor": 2.0,
-                "wait_for_timeout": 50,
+                "wait_for_timeout": 10,
                 "max_concurrent_pages": 1,
             },
             **(params_dict.get("convert_loc_killed_multiline_png") or {}),
@@ -4211,7 +4017,7 @@ def main(params: Params):
             config={
                 "full_page": False,
                 "device_scale_factor": 2.0,
-                "wait_for_timeout": 50,
+                "wait_for_timeout": 10,
                 "max_concurrent_pages": 1,
             },
             **(params_dict.get("convert_claim_type_multiline_png") or {}),
@@ -4296,7 +4102,7 @@ def main(params: Params):
                 "height": 2000,
                 "full_page": False,
                 "device_scale_factor": 2.0,
-                "wait_for_timeout": 50,
+                "wait_for_timeout": 10,
                 "max_concurrent_pages": 1,
             },
             **(params_dict.get("convert_pred_killed_multibar_png") or {}),
@@ -4309,13 +4115,6 @@ def main(params: Params):
         .set_task_instance_id("group_ranch_level_groupers")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             sequences=[split_by_ranch, split_previous_by_ranch],
             **(params_dict.get("group_ranch_level_groupers") or {}),
@@ -4328,13 +4127,6 @@ def main(params: Params):
         .set_task_instance_id("draw_ranch_level_historic_chart")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             x_axis="time",
             y_axis="Total animals killed",
@@ -4342,7 +4134,7 @@ def main(params: Params):
             time_frequency=time_frequency,
             ncols=2,
             shared_yaxes=False,
-            row_height=350,
+            row_height=300,
             group_order=None,
             group_column="Animal responsible",
             ascending=True,
@@ -4371,13 +4163,6 @@ def main(params: Params):
         .set_task_instance_id("combine_ranch_name_chart")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             sequences=[get_ranch_name, draw_ranch_level_historic_chart],
             **(params_dict.get("combine_ranch_name_chart") or {}),
@@ -4385,18 +4170,20 @@ def main(params: Params):
         .call()
     )
 
+    print_outputs = (
+        print_output.validate()
+        .set_task_instance_id("print_outputs")
+        .handle_errors()
+        .with_tracing()
+        .partial(label="ranch output", **(params_dict.get("print_outputs") or {}))
+        .mapvalues(argnames=["value"], argvalues=combine_ranch_name_chart)
+    )
+
     persist_ranch_historic_chart = (
         persist_text.validate()
         .set_task_instance_id("persist_ranch_historic_chart")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             root_path=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
             filename="ranch_level_historic_time_series_chart.html",
@@ -4412,19 +4199,12 @@ def main(params: Params):
         .set_task_instance_id("convert_ranch_historic_chart_png")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             output_dir=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
             config={
                 "full_page": False,
                 "device_scale_factor": 2.0,
-                "wait_for_timeout": 50,
+                "wait_for_timeout": 10,
                 "max_concurrent_pages": 1,
                 "width": 1280,
                 "height": 2000,
@@ -4439,13 +4219,6 @@ def main(params: Params):
         .set_task_instance_id("download_big_life_template")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             url="https://www.dropbox.com/scl/fi/i1v1emk1s2sb15w2arhld/pcf_report_template.docx?rlkey=16850ymbagt9vbuyqn8fsg7tc&st=zuxci7sv&dl=0",
             output_path=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
@@ -4462,13 +4235,6 @@ def main(params: Params):
         .set_task_instance_id("get_user_name")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(client=er_client_name, **(params_dict.get("get_user_name") or {}))
         .call()
     )
@@ -4478,13 +4244,6 @@ def main(params: Params):
         .set_task_instance_id("get_fullname")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(user=get_user_name, **(params_dict.get("get_fullname") or {}))
         .call()
     )
@@ -4494,13 +4253,6 @@ def main(params: Params):
         .set_task_instance_id("generate_big_life_report")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             template_path=download_big_life_template,
             output_dir=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
@@ -4518,13 +4270,6 @@ def main(params: Params):
         .set_task_instance_id("big_life_pcf_dashboard_report")
         .handle_errors()
         .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
         .partial(
             details=workflow_details,
             widgets=[],
