@@ -190,7 +190,7 @@ story += [
             ["ecoscope-workflows-ext-ste",     "0.0.17.*",  "ecoscope-workflows-custom"],
             ["ecoscope-workflows-ext-mnc",     "0.0.7.*",   "ecoscope-workflows-custom"],
             ["ecoscope-workflows-ext-mep",     "0.12.0.*",  "ecoscope-workflows-custom"],
-            ["ecoscope-workflows-ext-big-life","0.0.9.*",   "ecoscope-workflows-custom"],
+            ["ecoscope-workflows-ext-big-life","0.0.11.*",  "ecoscope-workflows-custom"],
         ],
         [6.5*cm, 3*cm, W - 9.5*cm],
     ),
@@ -253,10 +253,11 @@ story += [
       "transformation steps."),
     sp(6),
     h2("3.2  Previous period"),
-    p("The previous period is computed by <b>shift_previous_period</b> with "
-      "<b>periods_back = 5</b>. This shifts the time window back by five periods "
-      "relative to the current time range, enabling historic comparison in the "
-      "ranch-level time-series charts."),
+    p("The previous period is computed by <b>shift_previous_period</b>. "
+      "The <b>periods_back</b> parameter defaults to <b>1</b> (the immediately "
+      "preceding period of equal length) and is user-configurable — set a higher "
+      "value to compare against a more distant reference window. This enables "
+      "historic comparison in the ranch-level time-series charts."),
     sp(6),
     h2("3.3  Field normalisation"),
     p("Each pipeline applies the following transformation sequence:"),
@@ -271,7 +272,7 @@ story += [
             ["3", "drop_column_prefix",
              "Removes redundant column name prefixes introduced by normalisation"],
             ["4", "map_columns",
-             "Renames and retains only the required columns; drops 14 unused columns"],
+             "Renames and retains only the required columns; drops 9 unused columns"],
         ],
         [1.5*cm, 4.5*cm, W - 6*cm],
     ),
@@ -290,14 +291,14 @@ story += [
         [
             ["Pass", "Label applied", "Fields targeted"],
             ["1", "N/A",
-             "Adults injured, Adults killed, Compensation value to owner, "
-             "Young (<1yr) injured, Young (<1yr) killed, "
-             "Number of livestock in boma, Number of livestock in the area"],
+             "Did anyone see the predator, Did the predator enter boma, "
+             "Did the predator scare livestock from inside boma, "
+             "Does boma have LED simba lights, Does boma have predator proof fencing, "
+             "Predator Scout present, Tracks present"],
             ["2", "Unknown",
-             "Animal responsible, Boma type, Crop raided, "
-             "Livestock species, Ranch, Time of attack, "
-             "Type of claim, Validity of claim, "
-             "Where were the livestock when the attack happened"],
+             "Boma type, Livestock species, Predator Scout present, Ranch, "
+             "Time of attack, Type of claim, Validity of claim, "
+             "Where were the livestock when the attack happened, Animal responsible"],
         ],
         [1.2*cm, 2.5*cm, W - 3.7*cm],
     ),
@@ -707,9 +708,10 @@ story += [
 story += [
     h1("10. Workflow Execution Logic"),
     hr(),
-    h2("10.1  Global skip conditions"),
-    p("The top-level <b>task-instance-defaults</b> block applies two skip "
-      "conditions to every task unless overridden:"),
+    h2("10.1  Skip conditions"),
+    p("Skip conditions are applied per task via individual <b>skipif</b> blocks "
+      "rather than a global default. The two conditions applied consistently "
+      "throughout the pipeline are:"),
     bullet("<b>any_is_empty_df</b> — skips the task if any upstream DataFrame "
            "dependency is empty"),
     bullet("<b>any_dependency_skipped</b> — skips the task if any upstream "
@@ -717,13 +719,18 @@ story += [
     p("This propagates gracefully: if no valid events are found for a ranch "
       "or time period, all downstream tasks for that branch are skipped "
       "without raising an error."),
+    p("The previous-period event fetch uses <b>raise_on_empty: false</b>, so "
+      "if no previous-period events exist the workflow continues gracefully — "
+      "downstream tasks in that branch are skipped via the per-task skipif "
+      "conditions rather than raising an error."),
     sp(6),
     h2("10.2  Dual pipeline (current + previous)"),
     p("Event fetch → normalisation → filtering → missing-value replacement → "
       "numeric conversion → column derivation runs twice in parallel: once for "
-      "the current period and once for the previous period (shifted by 5 "
-      "periods). Both pipelines produce independent GeoDataFrames that flow "
-      "into the summary tables and historic comparison charts."),
+      "the current period and once for the previous period (shifted back by "
+      "<b>periods_back</b>, defaulting to 1). Both pipelines produce independent "
+      "GeoDataFrames that flow into the summary tables and historic comparison "
+      "charts."),
     sp(6),
     h2("10.3  mapvalues fan-out"),
     p("The <b>mapvalues</b> directive is used to fan out per-ranch processing:"),
@@ -771,7 +778,7 @@ story += [
             ["ecoscope-workflows-ext-ste",     "0.0.17.*"],
             ["ecoscope-workflows-ext-mnc",     "0.0.7.*"],
             ["ecoscope-workflows-ext-mep",     "0.12.0.*"],
-            ["ecoscope-workflows-ext-big-life","0.0.9.*"],
+            ["ecoscope-workflows-ext-big-life","0.0.11.*"],
         ],
         [8*cm, W - 8*cm],
     ),
