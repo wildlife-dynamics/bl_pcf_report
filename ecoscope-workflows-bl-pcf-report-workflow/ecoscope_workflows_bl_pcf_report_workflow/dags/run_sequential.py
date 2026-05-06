@@ -15,6 +15,9 @@ from ecoscope_workflows_core.tasks.skip import (
     any_dependency_skipped as any_dependency_skipped,
 )
 from ecoscope_workflows_core.tasks.skip import any_is_empty_df as any_is_empty_df
+from ecoscope_workflows_core.tasks.transformation import (
+    convert_column_values_to_numeric as convert_column_values_to_numeric,
+)
 from ecoscope_workflows_core.tasks.transformation import filter_df as filter_df
 from ecoscope_workflows_core.tasks.transformation import map_columns as map_columns
 from ecoscope_workflows_core.tasks.transformation import sort_values as sort_values
@@ -115,7 +118,6 @@ from ecoscope_workflows_ext_ecoscope.tasks.transformation import (
 from ecoscope_workflows_ext_ecoscope.tasks.transformation import (
     normalize_json_column as normalize_json_column,
 )
-from ecoscope_workflows_ext_mnc.tasks import convert_to_int as convert_to_int
 from ecoscope_workflows_ext_mnc.tasks import (
     exclude_geom_outliers as exclude_geom_outliers,
 )
@@ -784,7 +786,7 @@ def main(params: Params):
     )
 
     convert_current_to_int = (
-        convert_to_int.validate()
+        convert_column_values_to_numeric.validate()
         .set_task_instance_id("convert_current_to_int")
         .handle_errors()
         .with_tracing()
@@ -804,9 +806,6 @@ def main(params: Params):
                 "Young (<1yr) injured",
                 "Young (<1yr) killed",
             ],
-            errors="coerce",
-            fill_value=0,
-            inplace=True,
             **(params_dict.get("convert_current_to_int") or {}),
         )
         .call()
@@ -1013,7 +1012,7 @@ def main(params: Params):
     )
 
     convert_previous_to_int = (
-        convert_to_int.validate()
+        convert_column_values_to_numeric.validate()
         .set_task_instance_id("convert_previous_to_int")
         .handle_errors()
         .with_tracing()
@@ -1033,9 +1032,6 @@ def main(params: Params):
                 "Young (<1yr) injured",
                 "Young (<1yr) killed",
             ],
-            errors="coerce",
-            fill_value=0,
-            inplace=True,
             **(params_dict.get("convert_previous_to_int") or {}),
         )
         .call()

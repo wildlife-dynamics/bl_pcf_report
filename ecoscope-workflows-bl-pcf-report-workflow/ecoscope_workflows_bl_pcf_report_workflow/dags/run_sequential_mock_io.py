@@ -59,6 +59,9 @@ process_events_details = create_task_magicmock(  # 🧪
     anchor="ecoscope_workflows_ext_custom.tasks.io",  # 🧪
     func_name="process_events_details",  # 🧪
 )  # 🧪
+from ecoscope_workflows_core.tasks.transformation import (
+    convert_column_values_to_numeric as convert_column_values_to_numeric,
+)
 from ecoscope_workflows_core.tasks.transformation import map_columns as map_columns
 from ecoscope_workflows_ext_custom.tasks.transformation import (
     drop_column_prefix as drop_column_prefix,
@@ -69,7 +72,6 @@ from ecoscope_workflows_ext_custom.tasks.transformation import (
 from ecoscope_workflows_ext_ecoscope.tasks.transformation import (
     normalize_json_column as normalize_json_column,
 )
-from ecoscope_workflows_ext_mnc.tasks import convert_to_int as convert_to_int
 from ecoscope_workflows_ext_mnc.tasks import (
     replace_missing_with_label as replace_missing_with_label,
 )
@@ -811,7 +813,7 @@ def main(params: Params):
     )
 
     convert_current_to_int = (
-        convert_to_int.validate()
+        convert_column_values_to_numeric.validate()
         .set_task_instance_id("convert_current_to_int")
         .handle_errors()
         .with_tracing()
@@ -831,9 +833,6 @@ def main(params: Params):
                 "Young (<1yr) injured",
                 "Young (<1yr) killed",
             ],
-            errors="coerce",
-            fill_value=0,
-            inplace=True,
             **(params_dict.get("convert_current_to_int") or {}),
         )
         .call()
@@ -1040,7 +1039,7 @@ def main(params: Params):
     )
 
     convert_previous_to_int = (
-        convert_to_int.validate()
+        convert_column_values_to_numeric.validate()
         .set_task_instance_id("convert_previous_to_int")
         .handle_errors()
         .with_tracing()
@@ -1060,9 +1059,6 @@ def main(params: Params):
                 "Young (<1yr) injured",
                 "Young (<1yr) killed",
             ],
-            errors="coerce",
-            fill_value=0,
-            inplace=True,
             **(params_dict.get("convert_previous_to_int") or {}),
         )
         .call()
